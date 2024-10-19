@@ -1,11 +1,9 @@
 {
-	"name": "ingen",
+	"name": "intergen",
 	"version": "1.0.0",
 	"main": "src/index.js",
 	"private": true,
-	"author": {
-		"name": "Bence Markus"
-	},
+	"author": "Bence Markus<markusbence@outlook.com>",
 	"scripts": {
 		"start": "expo start",
 		"android": "expo run:android",

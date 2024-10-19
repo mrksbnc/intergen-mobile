@@ -23,63 +23,60 @@ export default function AppNavigator(): React.ReactElement {
 
 	useEffect(() => {
 		const bootstrapAsync = async () => {
+			let user: string | null;
+			let session: string | null;
+
 			try {
-				let user: string | null;
-				let session: string | null;
-
-				try {
-					user = await getItemAsync(SecureStorageKey.User);
-					session = await getItemAsync(SecureStorageKey.Session);
-				} catch (error) {
-					const e: Error = error as Error;
-					throw new Error(e.message);
-				}
-
-				if (!user) {
-					throw new Error('User not found');
-				}
-
-				if (!session) {
-					throw new Error('Session not found');
-				}
-
-				let parsedUser: User;
-				let parsedSession: Session;
-
-				try {
-					parsedUser = JSON.parse(user) as User;
-				} catch (error) {
-					const e: Error = error as Error;
-					throw new Error(e.message);
-				}
-
-				try {
-					parsedSession = JSON.parse(session) as Session;
-				} catch (error) {
-					const e: Error = error as Error;
-					throw new Error(e.message);
-				}
-
-				if (parsedSession && parsedUser) {
-					const token = parsedSession.access_token;
-					const refreshToken = parsedSession.refresh_token;
-
-					dispatch({
-						type: AppContextActionType.SetLoginData,
-						payload: {
-							token,
-							refreshToken,
-							user: parsedUser,
-							session: parsedSession,
-						},
-					});
-				}
+				user = await getItemAsync(SecureStorageKey.User);
+				session = await getItemAsync(SecureStorageKey.Session);
 			} catch (error) {
-				const e: Error = error as Error;
-				throw new Error(e.message);
+				console.error(error);
+				return;
+			}
+
+			if (!session || !user) {
+				return;
+			}
+
+			let parsedUser: User;
+			let parsedSession: Session;
+
+			try {
+				parsedUser = JSON.parse(user) as User;
+			} catch (error) {
+				console.error(error);
+				return;
+			}
+
+			try {
+				parsedSession = JSON.parse(session) as Session;
+			} catch (error) {
+				console.error(error);
+				return;
+			}
+
+			if (parsedSession && parsedUser) {
+				const token = parsedSession.access_token;
+				const refreshToken = parsedSession.refresh_token;
+
+				dispatch({
+					type: AppContextActionType.SetLoginData,
+					payload: {
+						token,
+						refreshToken,
+						user: parsedUser,
+						session: parsedSession,
+					},
+				});
 			}
 		};
-		bootstrapAsync();
+
+		try {
+			bootstrapAsync();
+		} catch (error) {
+			const e: Error = error as Error;
+			throw new Error(e.message);
+		}
 	}, [dispatch]);
 
 	return (

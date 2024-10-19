@@ -9,5 +9,5 @@
 			"@assets/*": ["./assets/*"]
 		}
 	},
-	"include": ["./src/**/*"]
+	"include": ["./src/**/*", "./nativewind-env.d.ts"]
 }

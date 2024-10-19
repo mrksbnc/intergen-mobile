@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "ingen",
-		"slug": "ingen",
+		"name": "intergen",
+		"slug": "intergen",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -12,15 +12,18 @@
 			"backgroundColor": "#ffffff"
 		},
 		"ios": {
+			"jsEngine": "hermes",
 			"supportsTablet": true,
-			"bundleIdentifier": "com.anonymous.ingen"
+			"usesAppleSignIn": true,
+			"bundleIdentifier": "com.code.intergen",
+			"config": {
+				"usesNonExemptEncryption": false
+			}
 		},
 		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
-			},
-			"package": "com.anonymous.ingen"
+			"jsEngine": "hermes",
+			"package": "com.code.intergen",
+			"softwareKeyboardLayoutMode": "pan"
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
@@ -30,7 +33,7 @@
 			[
 				"expo-asset",
 				{
-					"assets": ["./assets"]
+					"assets": ["./assets/auth-root-bg.png"]
 				}
 			]
 		]
