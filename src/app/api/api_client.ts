@@ -1,13 +1,13 @@
-import { useContext } from 'react';
-import { AppContext } from '@/app/context/contexts';
-import { useSecureStorage } from '@/hooks/use_secure_store';
+import { AppContext } from '@/app/context/contexts/app.context';
 import { SecureStorageKey } from '@/hooks/constants';
+import { useSecureStorage } from '@/hooks/use_secure_store';
+import { useContext } from 'react';
 
 let sharedInstance: ApiClient;
 
 const { getItemAsync } = useSecureStorage();
 
-export default class ApiClient {
+export class ApiClient {
 	public static getInstance(): ApiClient {
 		if (!sharedInstance) {
 			sharedInstance = new ApiClient();

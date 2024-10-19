@@ -1,7 +1,18 @@
+import { AppContextActionType, TabBarActionType } from '@/app/context/reducers/constants';
+import { Session, User } from '@supabase/supabase-js';
 import React from 'react';
-import { ActionMap } from '../__types__/action_map.types';
-import { User, Session } from '@supabase/supabase-js';
-import { AppContextActionType, TabBarActionType } from '@/app/context/reducers';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ActionMap<M extends { [index: string]: any }> = {
+	[K in keyof M]: M[K] extends undefined
+		? {
+				type: K;
+			}
+		: {
+				type: K;
+				payload: M[K];
+			};
+};
 
 export type AppState = {
 	user: User | null;
@@ -33,12 +44,12 @@ export type AppContextActionPayloadTypes = {
 
 export type AppContextActions = ActionMap<AppContextActionPayloadTypes>[keyof ActionMap<AppContextActionPayloadTypes>];
 
-export type BottomBarState = {
+export type TabState = {
 	visible: boolean;
 	activeTabIndex: number;
 };
 
-export type BottomBarContextProviderProps = {
+export type TabContextProviderProps = {
 	children: React.ReactNode;
 };
 
@@ -47,5 +58,4 @@ export type BottomBarActionPayloadTypes = {
 	[TabBarActionType.SetActiveTabIndex]: { activeTabIndex: number };
 };
 
-export type BottomBarContextActions =
-	ActionMap<BottomBarActionPayloadTypes>[keyof ActionMap<BottomBarActionPayloadTypes>];
+export type TabContextActions = ActionMap<BottomBarActionPayloadTypes>[keyof ActionMap<BottomBarActionPayloadTypes>];
