@@ -1,15 +1,12 @@
 import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
-import type { AsyncStorageBase, Database } from '@/types';
+import type { AsyncStorageBase, Database } from './types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export enum SupabaseTables {
-	IntergenUsers = 'intergen_users',
-}
+import { SupabaseEnvKey } from './constants';
 
 export const supabaseClient = createClient<Database>(
-	process.env.SUPABASE_URL ?? '',
-	process.env.SUPABASE_ANON_KEY ?? '',
+	process.env[SupabaseEnvKey.SupabaseUrl] ?? '',
+	process.env[SupabaseEnvKey.SupabaseAnonKey] ?? '',
 	{
 		auth: {
 			persistSession: true,

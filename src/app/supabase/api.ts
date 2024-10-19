@@ -1,7 +1,22 @@
-import { supabaseClient } from './supabaseClient';
+import { supabaseClient } from './supabase_client';
+import { FileUploadResponse, LoginResponse, SignUpResponse } from './types';
 
-export const useSupabase = () => {
-	const signInWithPassword = async (email: string, password: string) => {
+export type SupabaseHook = {
+	signInWithPassword: (email: string, password: string) => Promise<LoginResponse>;
+	signUp: (email: string, password: string) => Promise<SignUpResponse>;
+	signOut: () => Promise<void>;
+	uploadFile: (bucket: string, file: File) => Promise<FileUploadResponse>;
+	uploadFiles: (bucket: string, files: File[]) => Promise<FileUploadResponse[]>;
+	deleteFile: (bucket: string, key: string) => Promise<void>;
+	deleteFiles: (bucket: string, keys: string[]) => Promise<void>;
+};
+
+export const useSupabase = (): SupabaseHook => {
+	/**
+	 * @description Executes a login with password request to the Supabase API.
+	 * Returns a Promise that resolves into a LoginResponse object.
+	 */
+	async function signInWithPassword(email: string, password: string): Promise<LoginResponse> {
 		const { error, data } = await supabaseClient.auth.signInWithPassword({ email, password });
 
 		if (error) {
@@ -9,21 +24,27 @@ export const useSupabase = () => {
 		}
 
 		return data;
-	};
+	}
 
-	const signUp = async (email: string, password: string) => {
-		const { error } = await supabaseClient.auth.signUp({ email, password });
+	async function signUp(email: string, password: string): Promise<SignUpResponse> {
+		const { error, data } = await supabaseClient.auth.signUp({ email, password });
 
 		if (error) {
 			throw new Error(error.message);
 		}
-	};
 
-	const signOut = async () => {
+		if (!data) {
+			throw new Error('No data returned from signUp request');
+		}
+
+		return data;
+	}
+
+	async function signOut(): Promise<void> {
 		await supabaseClient.auth.signOut();
-	};
+	}
 
-	const uploadFile = async (bucket: string, file: File) => {
+	async function uploadFile(bucket: string, file: File): Promise<FileUploadResponse> {
 		const { error, data } = await supabaseClient.storage.from(bucket).upload(file.name, file);
 
 		if (error) {
@@ -31,21 +52,47 @@ export const useSupabase = () => {
 		}
 
 		return data;
-	};
+	}
 
-	const deleteFile = async (bucket: string, key: string) => {
+	async function uploadFiles(bucket: string, files: File[]): Promise<FileUploadResponse[]> {
+		const responses: FileUploadResponse[] = [];
+
+		for (const file of files) {
+			const response = await uploadFile(bucket, file);
+
+			if (!response) {
+				throw new Error('No response returned from uploadFile request');
+			}
+
+			responses.push(response);
+		}
+
+		return responses;
+	}
+
+	async function deleteFile(bucket: string, key: string): Promise<void> {
 		const { error } = await supabaseClient.storage.from(bucket).remove([key]);
 
 		if (error) {
 			throw new Error(error.message);
 		}
-	};
+	}
+
+	async function deleteFiles(bucket: string, keys: string[]): Promise<void> {
+		const { error } = await supabaseClient.storage.from(bucket).remove(keys);
+
+		if (error) {
+			throw new Error(error.message);
+		}
+	}
 
 	return {
 		signInWithPassword,
 		signUp,
 		signOut,
 		uploadFile,
+		uploadFiles,
 		deleteFile,
+		deleteFiles,
 	};
 };

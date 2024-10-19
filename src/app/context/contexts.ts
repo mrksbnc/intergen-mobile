@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { BottomBarContextActions, BottomBarState, AppContextActions, AppState } from '@/types';
+import type { BottomBarContextActions, BottomBarState, AppContextActions, AppState } from '@/app/__types__';
 
 export const initialState: AppState = {
 	user: null,

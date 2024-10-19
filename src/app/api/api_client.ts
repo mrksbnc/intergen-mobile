@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { AppContext } from '@/app/context/contexts';
-import { SECURE_STORAGE_KEYS, useSecureStorage } from '@/hooks/useSecureStore';
+import { useSecureStorage } from '@/hooks/use_secure_store';
+import { SecureStorageKey } from '@/hooks/constants';
 
 let sharedInstance: ApiClient;
 
@@ -27,7 +28,7 @@ export default class ApiClient {
 		let authToken = this.getAuthToken();
 
 		if (!authToken) {
-			authToken = await getItemAsync(SECURE_STORAGE_KEYS.TOKEN);
+			authToken = await getItemAsync(SecureStorageKey.Token);
 
 			if (!authToken) {
 				return headers;

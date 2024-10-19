@@ -1,4 +1,4 @@
-import type { AppContextActions, AppState, BottomBarContextActions, BottomBarState } from '@/types';
+import type { AppContextActions, AppState, BottomBarContextActions, BottomBarState } from '@/app/__types__';
 
 export enum AppContextActionType {
 	Logout = 'logout',
