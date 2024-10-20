@@ -39,9 +39,9 @@ export class TextInputCss {
 	};
 
 	private readonly inputSizeStyles: Record<InputSize, string> = {
-		[InputSize.Small]: /* tw*/ 'px-3 py-2 text-sm',
-		[InputSize.Medium]: /* tw*/ 'px-4 py-3 text-sm',
-		[InputSize.Large]: /* tw*/ 'px-5 py-4 text-base',
+		[InputSize.Small]: /* tw*/ 'px-3 py-2 text-sm leading-4',
+		[InputSize.Medium]: /* tw*/ 'px-4 py-3 text-sm leading-4',
+		[InputSize.Large]: /* tw*/ 'px-5 py-4 text-base leading-5',
 	};
 
 	private readonly inputLabelTextStyles: Record<InputSize, string> = {
