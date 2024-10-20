@@ -5,8 +5,8 @@ module.exports = {
 	content: ['./src/**/*.{js,jsx,ts,tsx}'],
 	theme: {
 		extend: {
-			backgroundImage: {
-				'login-bg': 'url("./assets/img/login-bg.png")',
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
 			},
 		},
 	},

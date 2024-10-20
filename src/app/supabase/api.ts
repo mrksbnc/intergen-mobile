@@ -1,8 +1,9 @@
+import SignInResponse from '@/modules/auth/models/login_response.model';
 import { supabaseClient } from './supabase_client';
-import { FileUploadResponse, LoginResponse, SignUpResponse } from './types';
+import { FileUploadResponse, SignUpResponse } from './types';
 
 export type SupabaseHook = {
-	signInWithPassword: (email: string, password: string) => Promise<LoginResponse>;
+	signInWithPassword: (email: string, password: string) => Promise<SignInResponse>;
 	signUp: (email: string, password: string) => Promise<SignUpResponse>;
 	signOut: () => Promise<void>;
 	uploadFile: (bucket: string, file: File) => Promise<FileUploadResponse>;
@@ -14,16 +15,16 @@ export type SupabaseHook = {
 export const useSupabase = (): SupabaseHook => {
 	/**
 	 * @description Executes a login with password request to the Supabase API.
-	 * Returns a Promise that resolves into a LoginResponse object.
+	 * Returns a Promise that resolves into a SignInResponse object.
 	 */
-	async function signInWithPassword(email: string, password: string): Promise<LoginResponse> {
+	async function signInWithPassword(email: string, password: string): Promise<SignInResponse> {
 		const { error, data } = await supabaseClient.auth.signInWithPassword({ email, password });
 
 		if (error) {
 			throw new Error(error.message);
 		}
 
-		return data;
+		return new SignInResponse(data.user, data.session, error);
 	}
 
 	async function signUp(email: string, password: string): Promise<SignUpResponse> {

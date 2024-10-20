@@ -15,12 +15,16 @@ export default function TabBar(props: BottomTabBarProps): React.ReactElement {
 	const animation = useRef(new Animated.Value(0)).current;
 
 	const getColor = (currentTab: string) => (currentTab === selected ? 'white' : 'gray');
-	const getStyle = (currentTab: string) => (currentTab === selected ? 'bg-indigo-600 rounded-full' : '');
+	const getStyle = (currentTab: string) =>
+		currentTab === selected ? 'bg-indigo-600 rounded-full' : '';
 
 	const handlePress = (activeTab: string, index: number) => {
 		if (state.index !== index) {
 			setSelected(activeTab);
-			tabContext.dispatch({ type: TabBarActionType.SetActiveTabIndex, payload: { activeTabIndex: index } });
+			tabContext.dispatch({
+				type: TabBarActionType.SetActiveTabIndex,
+				payload: { activeTabIndex: index },
+			});
 			navigation.navigate(activeTab);
 		}
 	};

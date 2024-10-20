@@ -7,8 +7,7 @@ export function useSecureStorage(): SecureStorageHook {
 		try {
 			await SecureStore.setItemAsync(key, value);
 		} catch (error) {
-			const e: Error = error as Error;
-			throw new Error(e.message);
+			throw error as Error;
 		}
 	};
 
@@ -17,8 +16,7 @@ export function useSecureStorage(): SecureStorageHook {
 			const value = await SecureStore.getItemAsync(key);
 			return value;
 		} catch (error) {
-			const e: Error = error as Error;
-			throw new Error(e.message);
+			throw error as Error;
 		}
 	};
 
@@ -26,8 +24,7 @@ export function useSecureStorage(): SecureStorageHook {
 		try {
 			await SecureStore.deleteItemAsync(key);
 		} catch (error) {
-			const e: Error = error as Error;
-			throw new Error(e.message);
+			throw error as Error;
 		}
 	};
 

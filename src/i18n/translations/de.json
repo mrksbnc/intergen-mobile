@@ -1,0 +1,14 @@
+{
+	"app.name": "",
+	"app.landing.subtitle": "",
+	"app.landing.button_label": "",
+	"auth.login.signInLabel": "Anmelden",
+	"auth.login.notregisteredLabel": "Noch kein Konto?",
+	"auth.login.signupLabel": "Neu registrieren!",
+	"auth.login.forgotPassword": "Passwort vergessen?",
+	"auth.login.failedLoginAttempt": "Anmeldung fehlgeschlagen.",
+	"auth.login.failedLoginAttemptMessage": "Email oder Passwort falsch. Bitte versuchen Sie es erneut.",
+	"auth.login.emailLabel": "E-mail",
+	"auth.login.passwordLabel": "Passwort",
+	"auth.signUp.title": "Registrieren"
+}

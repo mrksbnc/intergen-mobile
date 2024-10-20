@@ -11,6 +11,7 @@
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
 		},
+		"platforms": ["ios", "android"],
 		"ios": {
 			"jsEngine": "hermes",
 			"supportsTablet": true,
@@ -25,17 +26,16 @@
 			"package": "com.code.intergen",
 			"softwareKeyboardLayoutMode": "pan"
 		},
-		"web": {
-			"favicon": "./assets/favicon.png"
-		},
+
 		"plugins": [
 			"expo-secure-store",
 			[
 				"expo-asset",
 				{
-					"assets": ["./assets/auth-root-bg.png"]
+					"assets": ["./src/assets/img"]
 				}
-			]
+			],
+			"expo-localization"
 		]
 	}
 }

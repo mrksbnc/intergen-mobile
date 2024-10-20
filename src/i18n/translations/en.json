@@ -1,0 +1,14 @@
+{
+	"app.name": "Intergen",
+	"app.landing.subtitle": "Stable path to your dreams",
+	"app.landing.button_label": "Get started",
+	"auth.login.signInLabel": "Sign in",
+	"auth.login.loginButtonLabel": "Log in",
+	"auth.login.notregisteredLabel": "Sign Up",
+	"auth.login.signupLabel": "Sign up!",
+	"auth.login.forgotPassword": "Forgot Password?",
+	"auth.login.failedLoginAttempt": "Failed login attempt",
+	"auth.login.failedLoginAttemptMessage": "Invalid e-mail or password. Please try again.",
+	"auth.login.emailLabel": "E-mail",
+	"auth.login.passwordLabel": "Password"
+}

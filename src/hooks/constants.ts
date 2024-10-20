@@ -1,5 +1,6 @@
 export enum SecureStorageKey {
-	User = 'user',
-	Token = 'token',
-	Session = 'session',
+	User = 'auth.user',
+	Token = 'auth.token',
+	Session = 'auth.session',
+	Language = 'settings.language',
 }

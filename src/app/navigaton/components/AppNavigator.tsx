@@ -74,8 +74,7 @@ export default function AppNavigator(): React.ReactElement {
 		try {
 			bootstrapAsync();
 		} catch (error) {
-			const e: Error = error as Error;
-			throw new Error(e.message);
+			throw error as Error;
 		}
 	}, [dispatch]);
 

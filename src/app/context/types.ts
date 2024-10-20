@@ -38,11 +38,17 @@ export type AppContextActionPayloadTypes = {
 	[AppContextActionType.SetUserSession]: { session: Session };
 	[AppContextActionType.SetIsLoading]: { isLoading: boolean };
 	[AppContextActionType.SetIsAuthenticated]: { isAuthenticated: boolean };
-	[AppContextActionType.SetLoginData]: { token: string; refreshToken: string; session: Session; user: User };
+	[AppContextActionType.SetLoginData]: {
+		token: string;
+		refreshToken: string;
+		session: Session;
+		user: User;
+	};
 	[AppContextActionType.SetRefreshToken]: { refreshToken: string };
 };
 
-export type AppContextActions = ActionMap<AppContextActionPayloadTypes>[keyof ActionMap<AppContextActionPayloadTypes>];
+export type AppContextActions =
+	ActionMap<AppContextActionPayloadTypes>[keyof ActionMap<AppContextActionPayloadTypes>];
 
 export type TabState = {
 	visible: boolean;
@@ -58,4 +64,5 @@ export type BottomBarActionPayloadTypes = {
 	[TabBarActionType.SetActiveTabIndex]: { activeTabIndex: number };
 };
 
-export type TabContextActions = ActionMap<BottomBarActionPayloadTypes>[keyof ActionMap<BottomBarActionPayloadTypes>];
+export type TabContextActions =
+	ActionMap<BottomBarActionPayloadTypes>[keyof ActionMap<BottomBarActionPayloadTypes>];

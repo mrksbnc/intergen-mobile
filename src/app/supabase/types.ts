@@ -43,7 +43,7 @@ export type Database = {
 	};
 };
 
-export type LoginResponse = {
+export type SignInResponse = {
 	user: User;
 	session: Session;
 	weakPassword?: WeakPassword;

@@ -3,5 +3,6 @@
 	"eslint.debug": true,
 	"eslint.options": {
 		"overrideConfigFile": "eslint.config.mjs"
-	}
+	},
+	"tailwindCSS.experimental.classRegex": ["/\\*\\s*tw\\s*\\*/\\s*'([^']*)'", "/\\*\\s*tw\\s*\\*/\\s*\"([^\"]*)\""]
 }

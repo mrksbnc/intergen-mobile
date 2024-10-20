@@ -2,7 +2,7 @@
 	"semi": true,
 	"tabWidth": 2,
 	"useTabs": true,
-	"printWidth": 120,
+	"printWidth": 100,
 	"singleQuote": true,
 	"trailingComma": "all",
 	"plugins": ["prettier-plugin-organize-imports"]
