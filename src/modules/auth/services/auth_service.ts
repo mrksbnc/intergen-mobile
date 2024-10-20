@@ -23,12 +23,12 @@ export default class AuthService {
 		return instance;
 	}
 
-	public signIn = async ({ email, password }: SignInArgs): Promise<SignInResponse> => {
+	async signIn({ email, password }: SignInArgs): Promise<SignInResponse> {
 		const response = await this.supabase.signInWithPassword(email, password);
 		return response;
-	};
+	}
 
-	public signUp = async ({ email, password, firstName, lastName, dispatch }: SignUpArgs) => {
+	async signUp({ email, password, firstName, lastName, dispatch }: SignUpArgs) {
 		try {
 			const { error, data } = await supabaseClient.auth.signUp({
 				email,
@@ -77,9 +77,9 @@ export default class AuthService {
 		} catch (error) {
 			throw error as Error;
 		}
-	};
+	}
 
-	public signOut = async (dispatch: React.Dispatch<AppContextActions>): Promise<void> => {
+	async signOut(dispatch: React.Dispatch<AppContextActions>): Promise<void> {
 		try {
 			await supabaseClient.auth.signOut();
 			await deleteItemAsync(SecureStorageKey.User);
@@ -95,13 +95,13 @@ export default class AuthService {
 		} catch (error) {
 			throw error as Error;
 		}
-	};
+	}
 
-	public getCurrentUser = async (): Promise<User | null> => {
+	async getCurrentUser(jwt: string): Promise<User | null> {
 		try {
 			const {
 				data: { user },
-			} = await supabaseClient.auth.getUser();
+			} = await supabaseClient.auth.getUser(jwt);
 
 			if (!user) {
 				return null;
@@ -111,13 +111,13 @@ export default class AuthService {
 		} catch (error) {
 			throw error as Error;
 		}
-	};
+	}
 
-	public resetPassword = async (email: string): Promise<void> => {
+	async resetPassword(email: string): Promise<void> {
 		try {
 			await supabaseClient.auth.resetPasswordForEmail(email);
 		} catch (error) {
 			throw error as Error;
 		}
-	};
+	}
 }

@@ -34,10 +34,14 @@ export default function AppNavigator(): React.ReactElement {
 						<Stack.Screen name="Main" component={HomeTabs} />
 					)}
 					{isAuthenticated && (
-						<Stack.Group screenOptions={{ presentation: 'card' }}>
-							<Stack.Screen name="Notifications" component={NotificationModal} />
-							<Stack.Screen name="Profile" component={ProfileModal} />
-						</Stack.Group>
+						<>
+							<Stack.Group screenOptions={{ presentation: 'card' }}>
+								<Stack.Screen name="Notifications" component={NotificationModal} />
+							</Stack.Group>
+							<Stack.Group screenOptions={{ presentation: 'modal' }}>
+								<Stack.Screen name="Profile" component={ProfileModal} />
+							</Stack.Group>
+						</>
 					)}
 				</Stack.Navigator>
 			</NavigationContainer>

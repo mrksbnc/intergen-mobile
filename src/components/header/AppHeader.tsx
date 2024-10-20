@@ -27,9 +27,7 @@ export default function AppHeader(props: BottomTabHeaderProps): React.ReactEleme
 				<View className="flex flex-row items-center justify-center pl-2">
 					<TouchableOpacity onPress={handleProfilePress}>
 						<Image
-							source={{
-								uri: 'https://via.placeholder.com/300/09f.png/fff ',
-							}}
+							source={require('../../../assets/avatar-placeholder.jpg')}
 							className="w-8 h-8  rounded-full"
 						/>
 					</TouchableOpacity>

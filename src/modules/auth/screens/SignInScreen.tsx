@@ -67,10 +67,8 @@ export default function SignInScreen(): React.ReactElement {
 				},
 			});
 
-			const stringifiedUser = JSON.stringify(user);
 			const stringifiedSession = JSON.stringify(session);
 
-			await setItemAsync(SecureStorageKey.User, stringifiedUser);
 			await setItemAsync(SecureStorageKey.Token, session.access_token);
 			await setItemAsync(SecureStorageKey.Session, stringifiedSession);
 

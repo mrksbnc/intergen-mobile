@@ -5,7 +5,8 @@ import AppNavigator from '@/app/navigaton/components/AppNavigator';
 import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import AppUser from '@/modules/auth/models/app_user';
-import { Session, User } from '@supabase/supabase-js';
+import AuthService from '@/modules/auth/services/auth_service';
+import { Session } from '@supabase/supabase-js';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -21,16 +22,19 @@ export default function App(): React.ReactElement {
 
 	useEffect(() => {
 		const bootstrapAsync = async (): Promise<void> => {
-			const user: User | null = await getItemAsync(SecureStorageKey.User).then((user) =>
-				user ? JSON.parse(user) : null,
-			);
 			const session: Session | null = await getItemAsync(SecureStorageKey.Session).then(
 				(session) => (session ? JSON.parse(session) : null),
 			);
 
-			if (session && user) {
+			if (session) {
 				const token = session.access_token;
 				const refreshToken = session.refresh_token;
+
+				const user = await AuthService.instance.getCurrentUser(token);
+
+				if (!user) {
+					return;
+				}
 
 				const appUser = new AppUser({
 					id: user.id,
