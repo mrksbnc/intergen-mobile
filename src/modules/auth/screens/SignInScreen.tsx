@@ -5,7 +5,7 @@ import BaseButton from '@/components/button/BaseButton';
 import { ButtonType, ButtonVariant, SocialButtonType } from '@/components/button/constants';
 import Divider from '@/components/divider/Divider';
 import { InputStyle, InputVariant } from '@/components/input/constants';
-import BaseTextInput from '@/components/input/InputField';
+import InputField from '@/components/input/InputField';
 import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import '@/modules/auth/login.css';
@@ -33,7 +33,7 @@ export default function SignInScreen(): React.ReactElement {
 		Alert.alert(`Sign in with ${type} is currently not supported`);
 	}
 
-	async function signInUser() {
+	const signInUser = async () => {
 		try {
 			setIsLoading(true);
 
@@ -56,56 +56,55 @@ export default function SignInScreen(): React.ReactElement {
 				avatarUrl: user.user_metadata?.avatar_url ?? null,
 			});
 
-			const stringifiedSession = JSON.stringify(session);
-			const stringifiedUser = JSON.stringify(appUser);
+			dispatch({
+				type: AppContextActionType.SetLoginData,
+				payload: {
+					user,
+					session,
+					token: session.access_token,
+					refreshToken: session.refresh_token,
+					appUser,
+				},
+			});
 
+			const stringifiedUser = JSON.stringify(user);
+			const stringifiedSession = JSON.stringify(session);
+
+			await setItemAsync(SecureStorageKey.User, stringifiedUser);
 			await setItemAsync(SecureStorageKey.Token, session.access_token);
 			await setItemAsync(SecureStorageKey.Session, stringifiedSession);
-			await setItemAsync(SecureStorageKey.User, stringifiedUser);
 
+			dispatch({ type: AppContextActionType.SetUser, payload: { user } });
+			dispatch({ type: AppContextActionType.SetAppUser, payload: { appUser } });
 			dispatch({ type: AppContextActionType.SetUserSession, payload: { session } });
 			dispatch({
 				type: AppContextActionType.SetUserToken,
 				payload: { token: session.access_token },
 			});
 			dispatch({
-				type: AppContextActionType.SetRefreshToken,
-				payload: { refreshToken: session.refresh_token },
-			});
-
-			dispatch({
-				type: AppContextActionType.SetLoginData,
-				payload: {
-					user: appUser,
-					session,
-					token: session.access_token,
-					refreshToken: session.refresh_token,
-				},
-			});
-
-			dispatch({ type: AppContextActionType.SetUser, payload: { user: appUser } });
-			dispatch({
 				type: AppContextActionType.SetIsAuthenticated,
 				payload: { isAuthenticated: true },
+			});
+			dispatch({
+				type: AppContextActionType.SetRefreshToken,
+				payload: { refreshToken: session.refresh_token },
 			});
 		} catch (error) {
 			console.log(error);
 			Alert.alert(t('auth.login.failedLoginAttempt'), t('auth.login.failedLoginAttemptMessage'));
-			setPassword('');
 		} finally {
+			setPassword('');
 			setIsLoading(false);
 		}
-	}
+	};
 
 	return (
-		<View className="flex-1 items-center h-screen justify-between py-10 px-6 bg-neutral-100">
+		<View className="flex-1 items-center h-screen justify-between py-10 px-6 bg-neutral-50">
 			<View className="flex flex-col justify-center items-center pt-20">
-				<Text className="text-5xl font-light text-gray-950 tracking-widest pt-10 pb-3 font-sans">
-					{t('app.name')}
-				</Text>
+				<Image source={require('../../../../assets/logo.png')} className="shadow-md" />
 			</View>
 			<View key={'contentWrapperKey'} className="w-full">
-				<BaseTextInput
+				<InputField
 					value={email}
 					className="mb-2"
 					autoCapitalize="none"
@@ -116,7 +115,7 @@ export default function SignInScreen(): React.ReactElement {
 					label={t('auth.login.emailLabel')}
 					inputStyle={InputStyle.Default}
 				/>
-				<BaseTextInput
+				<InputField
 					secureTextEntry
 					value={password}
 					autoCapitalize="none"

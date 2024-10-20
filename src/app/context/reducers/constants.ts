@@ -1,6 +1,7 @@
 export enum AppContextActionType {
 	Logout = 'logout',
 	SetUser = 'set_user',
+	SetAppUser = 'set_app_user',
 	SetLoading = 'set_loading',
 	RestoreToken = 'restore_token',
 	SetSession = 'set_session',

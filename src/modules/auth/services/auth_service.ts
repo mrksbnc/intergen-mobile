@@ -1,14 +1,17 @@
+import { AppContextActionType } from '@/app/context/reducers/constants';
+import { AppContextActions } from '@/app/context/types';
 import { useSupabase } from '@/app/supabase';
 import { supabaseClient } from '@/app/supabase/supabase_client';
 import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import SignInResponse from '@/modules/auth/models/login_response.model';
 import type { SignInArgs, SignUpArgs } from '@/modules/auth/types';
+import { User } from '@supabase/supabase-js';
 import AppUser from '../models/app_user';
 
-let instance: AuthService;
-
 const { deleteItemAsync } = useSecureStorage();
+
+let instance: AuthService;
 
 export default class AuthService {
 	private readonly supabase = useSupabase();
@@ -25,14 +28,15 @@ export default class AuthService {
 		return response;
 	};
 
-	public signUp = async ({ email, password, fullName }: SignUpArgs) => {
+	public signUp = async ({ email, password, firstName, lastName, dispatch }: SignUpArgs) => {
 		try {
-			const { error } = await supabaseClient.auth.signUp({
+			const { error, data } = await supabaseClient.auth.signUp({
 				email,
 				password,
 				options: {
 					data: {
-						full_name: fullName,
+						first_name: firstName,
+						last_name: lastName,
 					},
 				},
 			});
@@ -40,40 +44,78 @@ export default class AuthService {
 			if (error) {
 				throw new Error(error.message);
 			}
+
+			if (!data.user || !data.session) {
+				throw new Error('No data returned from signUp request');
+			}
+
+			const appUser = new AppUser({
+				id: data.user.id,
+				email: data.user.email ?? '',
+				firstName: data.user.user_metadata?.first_name ?? '',
+				lastName: data.user.user_metadata?.last_name ?? '',
+				age: data.user.user_metadata?.age ?? null,
+				avatarUrl: data.user.user_metadata?.avatar_url ?? null,
+			});
+
+			dispatch({
+				type: AppContextActionType.SetUser,
+				payload: { user: data.user },
+			});
+			dispatch({
+				type: AppContextActionType.SetAppUser,
+				payload: { appUser: appUser },
+			});
+			dispatch({
+				type: AppContextActionType.SetUserSession,
+				payload: { session: data.session },
+			});
+			dispatch({
+				type: AppContextActionType.SetIsAuthenticated,
+				payload: { isAuthenticated: true },
+			});
 		} catch (error) {
 			throw error as Error;
 		}
 	};
 
-	public signOut = async () => {
+	public signOut = async (dispatch: React.Dispatch<AppContextActions>): Promise<void> => {
 		try {
 			await supabaseClient.auth.signOut();
 			await deleteItemAsync(SecureStorageKey.User);
 			await deleteItemAsync(SecureStorageKey.Token);
 			await deleteItemAsync(SecureStorageKey.Session);
+
+			dispatch({ type: AppContextActionType.ClearSession });
+
+			dispatch({
+				type: AppContextActionType.SetIsAuthenticated,
+				payload: { isAuthenticated: false },
+			});
 		} catch (error) {
 			throw error as Error;
 		}
 	};
 
-	public getCurrentUser = async (): Promise<AppUser | null> => {
+	public getCurrentUser = async (): Promise<User | null> => {
 		try {
-			const { data } = await supabaseClient.auth.getUser();
+			const {
+				data: { user },
+			} = await supabaseClient.auth.getUser();
 
-			if (!data || !data.user) {
+			if (!user) {
 				return null;
 			}
 
-			const metadata = data.user.user_metadata;
+			return user;
+		} catch (error) {
+			throw error as Error;
+		}
+	};
 
-			return new AppUser({
-				id: data.user.id,
-				email: data.user.email ?? '',
-				firstName: metadata?.first_name ?? '',
-				lastName: metadata?.last_name ?? '',
-				age: metadata?.age ?? null,
-				avatarUrl: metadata?.avatar_url ?? null,
-			});
+	public resetPassword = async (email: string): Promise<void> => {
+		try {
+			await supabaseClient.auth.resetPasswordForEmail(email);
 		} catch (error) {
 			throw error as Error;
 		}

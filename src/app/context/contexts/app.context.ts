@@ -3,6 +3,7 @@ import { createContext } from 'react';
 
 export const initialState: AppState = {
 	user: null,
+	appUser: null,
 	token: null,
 	session: null,
 	isLoading: false,

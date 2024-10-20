@@ -77,7 +77,6 @@ export type AuthStack = {
 	SignUp: undefined;
 	ForgotPassword: undefined;
 	ResetPassword: undefined;
-	Home: undefined;
 };
 
 export type TabStateHistory = {

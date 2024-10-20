@@ -74,7 +74,7 @@ export class TextInputCss {
 		style: InputStyle = InputStyle.Default,
 	): string {
 		return CssUtils.instance.concat(
-			'pb-1',
+			'pb-2',
 			this.inputLabelTextStyles[size],
 			this.inputLabelTextColor[variant][style],
 		);

@@ -1,3 +1,4 @@
+import { AppContextActions } from '@/app/context/types';
 import { AuthStack, MainTab } from '@/app/navigaton/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -13,7 +14,9 @@ export type SignInArgs = {
 export type SignUpArgs = {
 	email: string;
 	password: string;
-	fullName: string;
+	firstName: string;
+	lastName: string;
+	dispatch: React.Dispatch<AppContextActions>;
 };
 
 export type AppUserConstructorArgs = {

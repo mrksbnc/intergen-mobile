@@ -1,7 +1,7 @@
 import { AppContextActions, AppState } from '@/app/context/types';
 import { AppContextActionType } from './constants';
 
-export const appReducer = (state: AppState, action: AppContextActions) => {
+export const appReducer = (state: AppState, action: AppContextActions): AppState => {
 	switch (action.type) {
 		case AppContextActionType.Logout:
 			return {
@@ -15,6 +15,11 @@ export const appReducer = (state: AppState, action: AppContextActions) => {
 			return {
 				...state,
 				user: action.payload.user,
+			};
+		case AppContextActionType.SetAppUser:
+			return {
+				...state,
+				appUser: action.payload.appUser,
 			};
 		case AppContextActionType.RestoreToken:
 			return {

@@ -1,6 +1,6 @@
 import { AppContextActionType, TabBarActionType } from '@/app/context/reducers/constants';
 import AppUser from '@/modules/auth/models/app_user';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +16,8 @@ export type ActionMap<M extends { [index: string]: any }> = {
 };
 
 export type AppState = {
-	user: AppUser | null;
+	user: User | null;
+	appUser: AppUser | null;
 	token: string | null;
 	isLoading: boolean;
 	session: Session | null;
@@ -30,7 +31,7 @@ export type AppContextProviderProps = {
 
 export type AppContextActionPayloadTypes = {
 	[AppContextActionType.Logout]: undefined;
-	[AppContextActionType.SetUser]: { user: AppUser };
+	[AppContextActionType.SetUser]: { user: User };
 	[AppContextActionType.ClearSession]: undefined;
 	[AppContextActionType.RestoreToken]: { token: string };
 	[AppContextActionType.SetUserToken]: { token: string };
@@ -40,11 +41,13 @@ export type AppContextActionPayloadTypes = {
 	[AppContextActionType.SetUserSession]: { session: Session };
 	[AppContextActionType.SetIsAuthenticated]: { isAuthenticated: boolean };
 	[AppContextActionType.SetLoginData]: {
+		user: User;
 		token: string;
-		refreshToken: string;
 		session: Session;
-		user: AppUser;
+		appUser: AppUser;
+		refreshToken: string;
 	};
+	[AppContextActionType.SetAppUser]: { appUser: AppUser };
 	[AppContextActionType.SetRefreshToken]: { refreshToken: string };
 };
 

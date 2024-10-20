@@ -36,7 +36,7 @@ export default function AppHeader(props: BottomTabHeaderProps): React.ReactEleme
 					<View className="flex flex-col ml-2 items-start">
 						<Text className="text-gray-500 text-xs font-semibold m-0 p-0">Welcome,</Text>
 						<Text className="text-midnight text-xs font-semibold m-0 p-0">
-							{state.user?.fullName ?? state.user?.email ?? ''}
+							{state.appUser?.fullName ?? state.user?.email ?? ''}
 						</Text>
 					</View>
 				</View>

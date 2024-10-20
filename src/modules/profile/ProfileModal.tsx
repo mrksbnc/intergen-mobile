@@ -1,22 +1,20 @@
+import { AppContext } from '@/app/context/contexts/app.context';
+import { AppContextActionType } from '@/app/context/reducers/constants';
 import { AppHeaderProps } from '@/app/navigaton/types';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Alert, Button, Text, TouchableOpacity, View } from 'react-native';
-import AuthService from '../auth/services/auth_service';
+import React, { useContext } from 'react';
+import { Button, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProfileModal(): JSX.Element {
-	const navigation = useNavigation<AppHeaderProps>();
+	const { dispatch } = useContext(AppContext);
 
-	async function onLogoutClick() {
-		Alert.alert('Logout', 'Are you sure you want to logout?');
-		AuthService.instance.signOut();
-	}
+	const navigation = useNavigation<AppHeaderProps>();
 
 	return (
 		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 			<Text style={{ fontSize: 30 }}>Profile modal!</Text>
 			<Button onPress={() => navigation.goBack()} title="Dismiss" />
-			<TouchableOpacity onPress={() => onLogoutClick}>
+			<TouchableOpacity onPress={() => dispatch({ type: AppContextActionType.Logout })}>
 				<Text style={{ fontSize: 20 }}>Logout</Text>
 			</TouchableOpacity>
 		</View>
