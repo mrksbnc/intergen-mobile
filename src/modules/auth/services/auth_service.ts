@@ -6,7 +6,7 @@ import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import SignInResponse from '@/modules/auth/models/login_response.model';
 import type { SignInArgs, SignUpArgs } from '@/modules/auth/types';
-import { User } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import AppUser from '../models/app_user';
 
 const { deleteItemAsync } = useSecureStorage();
@@ -82,9 +82,8 @@ export default class AuthService {
 	async signOut(dispatch: React.Dispatch<AppContextActions>): Promise<void> {
 		try {
 			await supabaseClient.auth.signOut();
-			await deleteItemAsync(SecureStorageKey.User);
+
 			await deleteItemAsync(SecureStorageKey.Token);
-			await deleteItemAsync(SecureStorageKey.Session);
 
 			dispatch({ type: AppContextActionType.ClearSession });
 
@@ -116,6 +115,22 @@ export default class AuthService {
 	async resetPassword(email: string): Promise<void> {
 		try {
 			await supabaseClient.auth.resetPasswordForEmail(email);
+		} catch (error) {
+			throw error as Error;
+		}
+	}
+
+	async getCurrentSession(): Promise<Session | null> {
+		try {
+			const {
+				data: { session },
+			} = await supabaseClient.auth.getSession();
+
+			if (!session) {
+				return null;
+			}
+
+			return session;
 		} catch (error) {
 			throw error as Error;
 		}

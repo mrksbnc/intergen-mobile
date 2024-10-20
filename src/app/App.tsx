@@ -6,7 +6,6 @@ import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import AppUser from '@/modules/auth/models/app_user';
 import AuthService from '@/modules/auth/services/auth_service';
-import { Session } from '@supabase/supabase-js';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -22,17 +21,18 @@ export default function App(): React.ReactElement {
 
 	useEffect(() => {
 		const bootstrapAsync = async (): Promise<void> => {
-			const session: Session | null = await getItemAsync(SecureStorageKey.Session).then(
-				(session) => (session ? JSON.parse(session) : null),
-			);
+			const token: string | null = await getItemAsync(SecureStorageKey.Token);
 
-			if (session) {
-				const token = session.access_token;
-				const refreshToken = session.refresh_token;
-
+			if (token) {
 				const user = await AuthService.instance.getCurrentUser(token);
 
 				if (!user) {
+					return;
+				}
+
+				const session = await AuthService.instance.getCurrentSession();
+
+				if (!session) {
 					return;
 				}
 
@@ -48,11 +48,11 @@ export default function App(): React.ReactElement {
 				dispatch({
 					type: AppContextActionType.SetLoginData,
 					payload: {
-						token,
-						refreshToken,
-						user: user,
 						appUser,
-						session: session,
+						session,
+						user: user,
+						token: session.access_token,
+						refreshToken: session.refresh_token,
 					},
 				});
 				dispatch({ type: AppContextActionType.SetUser, payload: { user: user } });
