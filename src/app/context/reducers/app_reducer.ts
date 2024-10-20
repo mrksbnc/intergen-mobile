@@ -41,7 +41,7 @@ export const appReducer = (state: AppState, action: AppContextActions) => {
 				...state,
 				token: action.payload.token,
 			};
-		case AppContextActionType.SetIsLoading:
+		case AppContextActionType.SetLoading:
 			return {
 				...state,
 				isLoading: action.payload.isLoading,
@@ -70,6 +70,8 @@ export const appReducer = (state: AppState, action: AppContextActions) => {
 				refreshToken: action.payload.refreshToken,
 			};
 		default:
-			return state;
+			return {
+				...state,
+			};
 	}
 };

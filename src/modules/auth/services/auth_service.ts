@@ -4,7 +4,7 @@ import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import SignInResponse from '@/modules/auth/models/login_response.model';
 import type { SignInArgs, SignUpArgs } from '@/modules/auth/types';
-import { User } from '@supabase/supabase-js';
+import AppUser from '../models/app_user';
 
 let instance: AuthService;
 
@@ -56,13 +56,24 @@ export default class AuthService {
 		}
 	};
 
-	public getCurrentUser = async (jwt: string): Promise<User | null> => {
+	public getCurrentUser = async (): Promise<AppUser | null> => {
 		try {
-			const {
-				data: { user },
-			} = await supabaseClient.auth.getUser(jwt);
+			const { data } = await supabaseClient.auth.getUser();
 
-			return user;
+			if (!data || !data.user) {
+				return null;
+			}
+
+			const metadata = data.user.user_metadata;
+
+			return new AppUser({
+				id: data.user.id,
+				email: data.user.email ?? '',
+				firstName: metadata?.first_name ?? '',
+				lastName: metadata?.last_name ?? '',
+				age: metadata?.age ?? null,
+				avatarUrl: metadata?.avatar_url ?? null,
+			});
 		} catch (error) {
 			throw error as Error;
 		}

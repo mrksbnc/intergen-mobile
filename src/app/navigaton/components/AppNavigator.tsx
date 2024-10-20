@@ -4,22 +4,28 @@ import { AppContextActionType } from '@/app/context/reducers/constants';
 import { RootStack } from '@/app/navigaton/types';
 import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
+import AppUser from '@/modules/auth/models/app_user';
+import NotificationModal from '@/modules/notifications/NotificationModal';
+import ProfileModal from '@/modules/profile/ProfileModal';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Session, User } from '@supabase/supabase-js';
+import { Session } from '@supabase/supabase-js';
+import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect } from 'react';
 import AuthNavigator from './AuthNavigator';
 import HomeTabs from './HomeTabs';
 
 const Stack = createStackNavigator<RootStack>();
 
+SplashScreen.preventAutoHideAsync();
+
 export default function AppNavigator(): React.ReactElement {
+	const { getItemAsync } = useSecureStorage();
+
 	const {
-		state: { isLoading, isAuthenticated },
+		state: { isAuthenticated },
 		dispatch,
 	} = useContext(AppContext);
-
-	const { getItemAsync } = useSecureStorage();
 
 	useEffect(() => {
 		const bootstrapAsync = async () => {
@@ -38,11 +44,11 @@ export default function AppNavigator(): React.ReactElement {
 				return;
 			}
 
-			let parsedUser: User;
+			let parsedUser: AppUser;
 			let parsedSession: Session;
 
 			try {
-				parsedUser = JSON.parse(user) as User;
+				parsedUser = JSON.parse(user) as AppUser;
 			} catch (error) {
 				console.error(error);
 				return;
@@ -73,6 +79,7 @@ export default function AppNavigator(): React.ReactElement {
 
 		try {
 			bootstrapAsync();
+			SplashScreen.hideAsync();
 		} catch (error) {
 			throw error as Error;
 		}
@@ -82,18 +89,20 @@ export default function AppNavigator(): React.ReactElement {
 		<TabContextProvider>
 			<NavigationContainer>
 				<Stack.Navigator
+					initialRouteName="Auth"
 					screenOptions={{
 						headerShown: false,
 					}}
 				>
-					{!isLoading && !isAuthenticated ? (
+					{!isAuthenticated ? (
 						<Stack.Screen name="Auth" component={AuthNavigator} />
 					) : (
 						<Stack.Screen name="Main" component={HomeTabs} />
 					)}
-					{/* <Stack.Group screenOptions={{ presentation: 'modal' }}>
-						<Stack.Screen name="Profile" component={} />
-					</Stack.Group> */}
+					<Stack.Group screenOptions={{ presentation: 'modal' }}>
+						<Stack.Screen name="Notifications" component={NotificationModal} />
+						<Stack.Screen name="Profile" component={ProfileModal} />
+					</Stack.Group>
 				</Stack.Navigator>
 			</NavigationContainer>
 		</TabContextProvider>

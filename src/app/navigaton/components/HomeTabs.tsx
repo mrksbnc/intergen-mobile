@@ -23,7 +23,11 @@ export default function MainTabs(): React.ReactElement {
 				component={LearningScreen}
 				options={{ header: (props) => <AppHeader {...props} /> }}
 			/>
-			<Tab.Screen name="Feed" component={FeedScreen} options={{ header: (props) => <AppHeader {...props} /> }} />
+			<Tab.Screen
+				name="Feed"
+				component={FeedScreen}
+				options={{ header: (props) => <AppHeader {...props} /> }}
+			/>
 			<Tab.Screen
 				name="Settings"
 				component={SettingsScreen}

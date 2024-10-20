@@ -15,7 +15,7 @@ export const tabRoutes: Record<TabRouteName, TabRoute> = {
 	},
 	[TabRouteName.Learning]: {
 		name: TabRouteName.Learning,
-		icon: 'book-reader',
+		icon: 'book',
 		type: 'material-icons',
 	},
 	[TabRouteName.Feed]: {

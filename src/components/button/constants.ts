@@ -1,7 +1,7 @@
 export enum SocialButtonType {
-	Apple = 'apple',
+	Apple = 'Apple',
 	Facebook = 'facebook',
-	Google = 'google',
+	Google = 'Google',
 }
 
 export enum ButtonVariant {

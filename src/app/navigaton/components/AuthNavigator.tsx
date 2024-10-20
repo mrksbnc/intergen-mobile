@@ -1,4 +1,5 @@
 import { AuthStack } from '@/app/navigaton/types';
+import ResetPasswordScreen from '@/modules/auth/screens/ResetPasswordScreen';
 import SignInScreen from '@/modules/auth/screens/SignInScreen';
 import SignUpScreen from '@/modules/auth/screens/SignUpScreen';
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
@@ -27,6 +28,14 @@ export default function AuthNavigator(): React.ReactElement {
 				component={SignUpScreen}
 				options={{
 					title: 'Sign up',
+					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+				}}
+			/>
+			<Stack.Screen
+				name="ForgotPassword"
+				component={ResetPasswordScreen}
+				options={{
+					title: 'Reset password',
 					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 				}}
 			/>

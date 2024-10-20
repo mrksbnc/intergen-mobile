@@ -15,3 +15,12 @@ export type SignUpArgs = {
 	password: string;
 	fullName: string;
 };
+
+export type AppUserConstructorArgs = {
+	id: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	avatarUrl?: string;
+	age?: number;
+};

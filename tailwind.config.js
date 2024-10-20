@@ -9,6 +9,9 @@ module.exports = {
 				sans: ['Inter', 'sans-serif'],
 			},
 		},
+		colors: {
+			primary: '#A4FF74',
+		},
 	},
 	plugins: [],
 };

@@ -1,22 +1,22 @@
-import { ImageResourceUrl } from '@/assets/constants';
-import BaseButton from '@/components/button/BaseButton';
-import { ButtonType, ButtonVariant } from '@/components/button/constants';
-import Divider from '@/components/divider/Divider';
-import BaseTextInput from '@/components/input/InputField';
-import React, { useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
-
 import { AppContext } from '@/app/context/contexts/app.context';
 import { AppContextActionType } from '@/app/context/reducers/constants';
+import { ImageResourceUrl } from '@/assets/constants';
+import BaseButton from '@/components/button/BaseButton';
+import { ButtonType, ButtonVariant, SocialButtonType } from '@/components/button/constants';
+import Divider from '@/components/divider/Divider';
 import { InputStyle, InputVariant } from '@/components/input/constants';
+import BaseTextInput from '@/components/input/InputField';
 import { SecureStorageKey } from '@/hooks/constants';
 import { useSecureStorage } from '@/hooks/use_secure_store';
 import '@/modules/auth/login.css';
+import AppUser from '@/modules/auth/models/app_user';
+import SignInResponse from '@/modules/auth/models/login_response.model';
+import AuthService from '@/modules/auth/services/auth_service';
+import { SignInScreenProps } from '@/modules/auth/types';
 import { useNavigation } from '@react-navigation/native';
-import SignInResponse from '../models/login_response.model';
-import AuthService from '../services/auth_service';
-import { SignInScreenProps } from '../types';
+import React, { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SignInScreen(): React.ReactElement {
 	const { t } = useTranslation();
@@ -29,9 +29,8 @@ export default function SignInScreen(): React.ReactElement {
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
-	function clearFields() {
-		setEmail('');
-		setPassword('');
+	function onSocialButtonTap(type: SocialButtonType) {
+		Alert.alert(`Sign in with ${type} is currently not supported`);
 	}
 
 	async function signInUser() {
@@ -48,48 +47,58 @@ export default function SignInScreen(): React.ReactElement {
 				return;
 			}
 
-			dispatch({
-				type: AppContextActionType.SetLoginData,
-				payload: {
-					user,
-					session,
-					token: session.access_token,
-					refreshToken: session.refresh_token,
-				},
+			const appUser = new AppUser({
+				id: user.id,
+				email: user.email ?? '',
+				firstName: user.user_metadata?.first_name ?? '',
+				lastName: user.user_metadata?.last_name ?? '',
+				age: user.user_metadata?.age ?? null,
+				avatarUrl: user.user_metadata?.avatar_url ?? null,
 			});
 
-			const stringifiedUser = JSON.stringify(user);
 			const stringifiedSession = JSON.stringify(session);
+			const stringifiedUser = JSON.stringify(appUser);
 
-			await setItemAsync(SecureStorageKey.User, stringifiedUser);
 			await setItemAsync(SecureStorageKey.Token, session.access_token);
 			await setItemAsync(SecureStorageKey.Session, stringifiedSession);
+			await setItemAsync(SecureStorageKey.User, stringifiedUser);
 
-			dispatch({ type: AppContextActionType.SetUser, payload: { user } });
 			dispatch({ type: AppContextActionType.SetUserSession, payload: { session } });
 			dispatch({
 				type: AppContextActionType.SetUserToken,
 				payload: { token: session.access_token },
 			});
 			dispatch({
-				type: AppContextActionType.SetIsAuthenticated,
-				payload: { isAuthenticated: true },
-			});
-			dispatch({
 				type: AppContextActionType.SetRefreshToken,
 				payload: { refreshToken: session.refresh_token },
+			});
+
+			dispatch({
+				type: AppContextActionType.SetLoginData,
+				payload: {
+					user: appUser,
+					session,
+					token: session.access_token,
+					refreshToken: session.refresh_token,
+				},
+			});
+
+			dispatch({ type: AppContextActionType.SetUser, payload: { user: appUser } });
+			dispatch({
+				type: AppContextActionType.SetIsAuthenticated,
+				payload: { isAuthenticated: true },
 			});
 		} catch (error) {
 			console.log(error);
 			Alert.alert(t('auth.login.failedLoginAttempt'), t('auth.login.failedLoginAttemptMessage'));
+			setPassword('');
 		} finally {
-			clearFields();
 			setIsLoading(false);
 		}
 	}
 
 	return (
-		<View className="flex-1 items-center h-screen justify-between py-10 px-6 bg-neutral-200">
+		<View className="flex-1 items-center h-screen justify-between py-10 px-6 bg-neutral-100">
 			<View className="flex flex-col justify-center items-center pt-20">
 				<Text className="text-5xl font-light text-gray-950 tracking-widest pt-10 pb-3 font-sans">
 					{t('app.name')}
@@ -105,7 +114,7 @@ export default function SignInScreen(): React.ReactElement {
 					variant={InputVariant.Dark}
 					textContentType="emailAddress"
 					label={t('auth.login.emailLabel')}
-					inputStyle={InputStyle.Underline}
+					inputStyle={InputStyle.Default}
 				/>
 				<BaseTextInput
 					secureTextEntry
@@ -115,11 +124,14 @@ export default function SignInScreen(): React.ReactElement {
 					variant={InputVariant.Dark}
 					onChangeText={setPassword}
 					textContentType="password"
-					inputStyle={InputStyle.Underline}
+					inputStyle={InputStyle.Default}
 					label={t('auth.login.passwordLabel')}
 				/>
 				<View className="flex flex-row items-center justify-end ">
-					<TouchableOpacity className="pt-2 pb-2 font-sans">
+					<TouchableOpacity
+						className="pt-2 pb-2 font-sans"
+						onPress={() => navigation.navigate('ForgotPassword')}
+					>
 						<Text className="text-xs font-medium  text-gray-800 font-sans">
 							{t('auth.login.forgotPassword')}
 						</Text>
@@ -142,6 +154,7 @@ export default function SignInScreen(): React.ReactElement {
 						disabled={isLoading}
 						label="Continue with Apple"
 						classes="my-1 flex flex-row items-center"
+						onPress={() => onSocialButtonTap(SocialButtonType.Apple)}
 					>
 						<Image
 							source={{
@@ -156,6 +169,7 @@ export default function SignInScreen(): React.ReactElement {
 						type={ButtonType.Rounded}
 						label="Continue with Google"
 						classes="my-1 flex flex-row items-center"
+						onPress={() => onSocialButtonTap(SocialButtonType.Google)}
 					>
 						<Image
 							source={{

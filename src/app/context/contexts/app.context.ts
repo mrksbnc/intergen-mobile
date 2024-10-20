@@ -10,7 +10,10 @@ export const initialState: AppState = {
 	isAuthenticated: false,
 };
 
-export const AppContext = createContext<{ state: AppState; dispatch: React.Dispatch<AppContextActions> }>({
+export const AppContext = createContext<{
+	state: AppState;
+	dispatch: React.Dispatch<AppContextActions>;
+}>({
 	state: initialState,
 	dispatch: () => null,
 });
